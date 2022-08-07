@@ -1,5 +1,6 @@
 package com.example.chiquita.filters;
 
+import com.example.chiquita.service.CustomUserDetailsService;
 import com.example.chiquita.service.UserService;
 import com.example.chiquita.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
 
-    private final UserService userService;
+    private final CustomUserDetailsService userService;
 
     @Autowired
-    public JwtFilter(JwtUtils jwtUtils, UserService userService) {
+    public JwtFilter(JwtUtils jwtUtils, CustomUserDetailsService userService) {
         this.jwtUtils = jwtUtils;
         this.userService = userService;
     }

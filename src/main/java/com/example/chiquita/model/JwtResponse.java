@@ -1,4 +1,7 @@
 package com.example.chiquita.model;
 
-public record JwtResponse(String jwtToken) {
+import com.example.chiquita.entities.UserEntity;
+import com.example.chiquita.responses.UserResponse;
+
+public record JwtResponse(String jwtToken, String refreshToken, UserResponse user) {
 }

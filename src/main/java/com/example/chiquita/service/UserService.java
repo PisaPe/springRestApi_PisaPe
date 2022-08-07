@@ -1,18 +1,48 @@
 package com.example.chiquita.service;
 
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.example.chiquita.entities.RoleEntity;
+import com.example.chiquita.entities.UserEntity;
+import com.example.chiquita.repositories.RoleRepository;
+import com.example.chiquita.repositories.UserRepository;
+import com.example.chiquita.requests.RegisterRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.HashSet;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
+    private final UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new User("admin", "123456", new ArrayList<>());
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+    }
+    public UserEntity getByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+    @Transactional
+    public UserEntity saveUser(RegisterRequest registerRequest){
+        var userEntity = new UserEntity();
+//        BeanUtils.copyProperties(registerRequest,userEntity);
+        userEntity.setEmail(registerRequest.email());
+        userEntity.setActive(true);
+        userEntity.setFirstName(registerRequest.firstName());
+        userEntity.setLastName(registerRequest.lastName());
+        userEntity.setPassword(passwordEncoder.encode(registerRequest.password()));
+
+        var roleEntity = roleRepository.findByRole("USER_BASIC");
+        userEntity.setRoles(new HashSet<RoleEntity>(Collections.singletonList(roleEntity)));
+
+        return userRepository.save(userEntity);
     }
 }

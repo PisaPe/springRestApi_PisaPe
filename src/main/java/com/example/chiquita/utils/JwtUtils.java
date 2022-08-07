@@ -1,5 +1,6 @@
 package com.example.chiquita.utils;
 
+import com.example.chiquita.entities.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -46,9 +47,9 @@ public class JwtUtils implements Serializable {
     }
 
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserEntity userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateToken(claims, userDetails.getEmail());
     }
 
 
